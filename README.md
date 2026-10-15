@@ -1,15 +1,16 @@
 ## Live Demo
-https://YOUR-LINK.onrender.com
+https://clothing-swap-1.onrender.com/dashboard
 
 Demo logins:
 - User: aarav@example.com / Demo@123
-- Admin: admin@clothingswap.com / Admin@123# ClothingSwap - Clothing Exchange & Swap Marketplace
+- Admin: admin@clothingswap.com / Admin@123
+- 
+# ClothingSwap - Clothing Exchange & Swap Marketplace
 
 A web platform where people swap clothes they no longer wear instead of buying new ones. Users list items, browse clothes near them, send swap requests, negotiate in a chat and complete the exchange. An admin panel handles moderation and analytics.
 
 Built as part of the internship project at Unified Mentor Pvt Ltd.
 
-**Live link:** _add your Render URL here_
 
 ## Features
 
