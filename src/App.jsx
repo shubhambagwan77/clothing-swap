@@ -1,187 +1,34 @@
-import{useState, useEffect} from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar.jsx';
+import Protected from './components/Protected.jsx';
+import Login from './pages/Login.jsx';
+import Listings from './pages/Listings.jsx';
+import ItemDetail from './pages/ItemDetail.jsx';
+import SwapRequest from './pages/SwapRequest.jsx';
+import Chat from './pages/Chat.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import AddItem from './pages/AddItem.jsx';
+import Admin from './pages/Admin.jsx';
 
-import './App.css';
-const API_URL = 'http://localhost:5000/api/clothes';
 function App() {
-  const [clothes, setClothes] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState('');
-
-useEffect(() => {
-  async function loadClothes() {
-    try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error('Server error');
-      const data = await res.json();
-      setClothes(data);
-    } catch (err) {
-      setError('Could not load clothes. Is the backend running?');
-    } finally {
-      setLoading(false);
-    }
-  }
-  loadClothes();
-}, []);
-    
-  const [item, setItem] = useState('');
-  const [filter, setFilter] = useState('All');
-  const [category, setCategory] = useState('Men');
-  const [image, setImage] = useState('');
-
-  async function addClothes(e) {
-  e.preventDefault();
-
-  if (!item.trim()) {
-    setError('Please enter a clothing name.');
-    return;
-  }
-
-  try {
-    setError('');
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        item: item.trim(),
-        category,
-        image,
-      }),
-    });
-    if (!res.ok) throw new Error('Failed to save');
-    const saved = await res.json();
-    setClothes([saved, ...clothes]);
-    setItem('');
-    setImage('');
-  } catch (err) {
-    setError('Could not save the item. Please try again.');
-  }
-}
-
-  // Filter clothes by category
-  const filteredClothes =
-    filter === 'All'
-      ? clothes
-      : clothes.filter((cloth) => cloth.category === filter);
-
-  // Remove clothing
-  async function removeClothes(id) {
-  try {
-    setError('');
-    const res = await fetch(API_URL + '/' + id, { method: 'DELETE' });
-    if (!res.ok) throw new Error('Failed to delete');
-    setClothes(clothes.filter((cloth) => cloth._id !== id));
-  } catch (err) {
-    setError('Could not delete the item. Please try again.');
-  }
-}
-
   return (
     <div className="app">
-      <header>
-        <h1>ClothingSwap 👕</h1>
-        <p>Swap clothes. Refresh your style.</p>
-      </header>
-
+      <Navbar />
       <main>
-        <section className="hero">
-          <h2>Give Clothes a Second Life</h2>
-          <p>
-            List your pre-loved clothes and discover something new.
-          </p>
-        </section>
-
-        {/* Form to add clothing */}
-        <section className="listing">
-          <h2>List Your Clothes</h2>
-
-          <form onSubmit={addClothes}>
-            <input
-  type="file"
-  accept="image/*"
-  onChange={(e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-
-      reader.readAsDataURL(file);
-    }
-  }}
-/>
-            <input
-              value={item}
-              onChange={(e) => setItem(e.target.value)}
-              placeholder="Enter clothing name"
-              required
-            />
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
-              <option value="Kids">Kids</option>
-              <option value="Accessories">Accessories</option>
-            </select>
-
-            <button type="submit">Add Clothing</button>
-          </form>
-        </section>
-
-        {/* Available clothes and category filters */}
-        <section className="items">
-          <h2>Available Clothes ({filteredClothes.length})</h2>
-          {loading && <p>Loading clothes...</p>}
-{error && <p style={{ color: 'red' }}>{error}</p>}
-
-          <div className="filters">
-            {['All', 'Men', 'Women', 'Kids', 'Accessories'].map(
-              (categoryName) => (
-                <button
-                  type="button"
-                  key={categoryName}
-                  onClick={() => setFilter(categoryName)}
-                  className={filter === categoryName ? 'active' : ''}
-                >
-                  {categoryName}
-                </button>
-              )
-            )}
-          </div>
-
-          <div className="grid">
-            {filteredClothes.length === 0 ? (
-              <p>No clothes found. Add some clothes to get started!</p>
-            ) : (
-              filteredClothes.map((cloth) => (
-                <article className="card" key={cloth._id || cloth.id}>
-                  {cloth.image && (
-  <img
-    src={cloth.image}
-    alt={cloth.item}
-    className="clothing-image"
-  />
-)}
-<h3>{cloth.item}</h3>
-                  <p>Category: {cloth.category}</p>
-
-                  <button
-                    type="button"
-                    onClick={() => removeClothes(cloth._id)}
-                  >
-                    Remove
-                  </button>
-                </article>
-              ))
-            )}
-          </div>
-        </section>
+        <Routes>
+          <Route path="/" element={<Listings />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/item/:id" element={<ItemDetail />} />
+          <Route path="/swap/:id" element={<Protected><SwapRequest /></Protected>} />
+          <Route path="/chat/:id" element={<Protected><Chat /></Protected>} />
+          <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+          <Route path="/sell" element={<Protected><AddItem /></Protected>} />
+          <Route path="/sell/:id" element={<Protected><AddItem /></Protected>} />
+          <Route path="/admin" element={<Protected admin><Admin /></Protected>} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
+      <footer className="footer">ClothingSwap · Swap clothes, reduce waste</footer>
     </div>
   );
 }
