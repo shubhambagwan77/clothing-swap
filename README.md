@@ -1,4 +1,9 @@
-# ClothingSwap - Clothing Exchange & Swap Marketplace
+## Live Demo
+https://YOUR-LINK.onrender.com
+
+Demo logins:
+- User: aarav@example.com / Demo@123
+- Admin: admin@clothingswap.com / Admin@123# ClothingSwap - Clothing Exchange & Swap Marketplace
 
 A web platform where people swap clothes they no longer wear instead of buying new ones. Users list items, browse clothes near them, send swap requests, negotiate in a chat and complete the exchange. An admin panel handles moderation and analytics.
 
